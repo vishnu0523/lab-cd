@@ -1,0 +1,21 @@
+%{
+int comment_flag = 0;
+%}
+%%
+"//".*                { comment_flag = 1; }          
+"/"([^]|\+[^/])\+"/" { comment_flag = 1; }     
+.                    { /* Ignore other characters */ }
+%%
+int main()
+{
+    yylex();
+    if (comment_flag == 1)
+        printf("Contains Comment\n");
+    else
+        printf("No Comment Found\n");
+}
+
+int yywrap()
+{
+    return 1;
+}

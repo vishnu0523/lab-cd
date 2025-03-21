@@ -1,0 +1,36 @@
+%{
+#include <stdio.h>
+int comment_count = 0;
+FILE *output;
+%}
+
+%%
+//.*      { comment_count++; }  /* Matches single-line comments */
+/\\*([^*]|\\*+[^*/])*\\*+/  { comment_count++; }  /* Matches multi-line comments */
+[^/\\n]+ { fprintf(output, "%s", yytext); }  /* Writes non-comment content */
+\n       { fprintf(output, "%s", yytext); }  /* Writes new lines */
+
+%%
+
+int main() {
+    FILE *input = fopen("input.c", "r");
+    output = fopen("output.c", "w");
+    
+    if (!input || !output) {
+        perror("Error opening file");
+        return 1;
+    }
+    
+    yyin = input;
+    yylex();
+    
+    fclose(input);
+    fclose(output);
+    
+    printf("Number of comment lines removed: %d\\n", comment_count);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

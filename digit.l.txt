@@ -1,0 +1,19 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[0-9]    { printf("Digit: %s\n", yytext); }
+[^0-9\n] { printf("Not a Digit: %s\n", yytext); }
+\n       ;  // Ignore new lines
+%%
+
+int main() {
+    printf("Enter characters to check (Press Ctrl+D to stop input):\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

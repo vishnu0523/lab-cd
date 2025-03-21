@@ -1,0 +1,31 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+%}
+
+%%
+
+(http|https):\/\/[a-zA-Z0-9\-\.]+\.(com|org|net|edu|gov|mil|io|info)(\/[a-zA-Z0-9\-._~:\/?#[\]@!$&'()*+,;=]*)?   { 
+    printf("Valid URL: %s\n", yytext); 
+}
+
+www\.[a-zA-Z0-9\-\.]+\.(com|org|net|edu|gov|mil|io|info)(\/[a-zA-Z0-9\-._~:\/?#[\]@!$&'()*+,;=]*)?   { 
+    printf("Valid URL: %s\n", yytext); 
+}
+
+.   { 
+    printf("Invalid input: %s\n", yytext); 
+}
+
+%%
+
+int main() {
+    printf("Enter a URL to validate (Ctrl+D to stop):\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

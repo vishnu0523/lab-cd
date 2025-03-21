@@ -1,0 +1,24 @@
+%{
+#include <stdio.h>
+
+int positive_count = 0, negative_count = 0;
+%}
+
+%%
+"-"[0-9]+  { printf("Negative Number: %s\n", yytext); negative_count++; }
+[0-9]+     { printf("Positive Number: %s\n", yytext); positive_count++; }
+[ \t\n]+   ;  // Ignore whitespace
+.          ;  // Ignore other characters
+%%
+
+int main() {
+    printf("Enter numbers in a statement:\n");
+    yylex();
+    printf("\nTotal Positive Numbers: %d\n", positive_count);
+    printf("Total Negative Numbers: %d\n", negative_count);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

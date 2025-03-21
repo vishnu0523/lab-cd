@@ -1,0 +1,25 @@
+%{
+#include <stdio.h>
+int macro_count = 0, header_count = 0;
+%}
+
+%%
+
+^#define[ \t]+[a-zA-Z0-9_]+ { macro_count++; }
+^#include[ \t]+["<][a-zA-Z0-9_./]+[">] { header_count++; }
+
+. ;
+
+%%
+
+int main() {
+    printf("Enter a C program (Press Ctrl+D to end input):\n");
+    yylex();
+    printf("Number of Macros: %d\n", macro_count);
+    printf("Number of Header files: %d\n", header_count);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

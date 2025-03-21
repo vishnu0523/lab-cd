@@ -1,0 +1,53 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#define MAX_WORD 100
+
+char search_word[MAX_WORD], replace_word[MAX_WORD];
+FILE *inputFile, *outputFile;
+%}
+
+%%
+[a-zA-Z]+ {
+    if (strcmp(yytext, search_word) == 0) {
+        fprintf(outputFile, "%s", replace_word);
+    } else {
+        fprintf(outputFile, "%s", yytext);
+    }
+}
+
+[^a-zA-Z]+ {
+    fprintf(outputFile, "%s", yytext);
+}
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc != 4) {
+        printf("Usage: %s <input_file> <search_word> <replace_word>\n", argv[0]);
+        return 1;
+    }
+    
+    inputFile = fopen(argv[1], "r");
+    if (!inputFile) {
+        perror("Error opening input file");
+        return 1;
+    }
+    
+    strcpy(search_word, argv[2]);
+    strcpy(replace_word, argv[3]);
+    
+    outputFile = fopen("output.txt", "w");
+    if (!outputFile) {
+        perror("Error opening output file");
+        return 1;
+    }
+    
+    yyin = inputFile;
+    yylex();
+    
+    fclose(inputFile);
+    fclose(outputFile);
+    
+    printf("Word replacement completed. Output saved in output.txt\n");
+    return 0;
+}
